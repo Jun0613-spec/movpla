@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     String          @id @default(cuid())
+  email                  String          @unique
+  password               String?
+  username               String?
+  firstName              String?
+  lastName               String?
+  avatarImage            String?
+  googleId               String?         @unique
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  
+  properties             Property[]      
+  savedProperties        SavedProperty[] 
+ 
+  chats                  Chat[]          
+  messages               Message[]      
+
+  refreshTokens          RefreshToken[]  @relation("refresh_token")
+
+  @@index([email])
+  @@map("users")
+}
+
+
+model RefreshToken {
+  id                     String    @id @default(uuid())
+  token                  String    @unique
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  userId                 String
+  user                   User      @relation("refresh_token" ,fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_token")
+}
+
+model Property {
+  id                     String    @id @default(cuid())
+  images                 String[]
+  title                  String
+  desc                   String
+  address                String
+  postcode               String
+  city                   String
+  price                  Int         @default(1) 
+  bedroom                Int?        @default(1) 
+  bathroom               Int?        @default(1) 
+  latitude               String
+  longitude              String
+  listingType            ListingType
+  propertyType           PropertyType
+  furnishedType          FurnishedType?
+  pet                    Boolean?    @default(false)
+  garden                 Boolean?    @default(false)
+  balcony                Boolean?    @default(false)
+  parking                Boolean?    @default(false)
+  size                   Int?
+
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+ 
+  user                   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                 String
+  
+  savedProperties        SavedProperty[]
+  
+  @@index([city, listingType, propertyType]) 
+  @@map("properties")
+}
+
+enum ListingType {
+  ForSale
+  ToRent
+  Sold
+  Rented
+}
+
+enum PropertyType {
+  House
+  Flat
+  Apartment
+  Studio
+  Bungalow
+  Land
+}
+
+enum FurnishedType {
+  Furnished
+  PartFurnished
+  Unfurnished
+}
+
+
+model SavedProperty {
+  id                     String      @id @default(cuid())
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+  isSaved                 Boolean     
+
+  user                   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                 String
+
+  property               Property?   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId             String?
+
+  
+  @@unique([userId, propertyId])
+  @@index([userId, propertyId])
+  @@map("saved_property")
+}
+
+model Chat {
+  id                     String      @id @default(cuid())
+  lastMessage            String?
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+  
+  participants           User[]
+  messages               Message[]
+
+  @@index([updatedAt])
+  @@map("chat")
+}
+
+model Message {
+  id                     String      @id @default(cuid())
+  text                   String
+  seenBy                 String[]    @default([])
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  chat                   Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId                 String
+
+  sender                 User        @relation(fields: [senderId], references: [id],  onDelete: Cascade)
+  senderId               String
+  
+  @@index([createdAt])
+  @@index([senderId])
+  @@map("messages")
+}
+
