@@ -52,16 +52,6 @@ const Navbar = () => {
         </Link>
         <div className="hidden md:flex  gap-4">
           <NavItem href="/" label="Home" isActive={pathname === "/"} />
-          <NavItem
-            href="/for-sale"
-            label="For sale"
-            isActive={pathname === "/for-sale"}
-          />
-          <NavItem
-            href="/to-rent"
-            label="To rent"
-            isActive={pathname === "/to-rent"}
-          />
         </div>
       </section>
 

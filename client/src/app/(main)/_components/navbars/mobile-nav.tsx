@@ -78,18 +78,6 @@ const MobileNav = ({ menuOpen, setMenuOpen }: MobileNavProps) => {
             isActive={pathname === "/"}
             className="w-full"
           />
-          <NavItem
-            href="/for-sale"
-            label="For sale"
-            isActive={pathname === "/for-sale"}
-            className="w-full"
-          />
-          <NavItem
-            href="/to-rent"
-            label="To rent"
-            isActive={pathname === "/to-rent"}
-            className="w-full"
-          />
         </div>
       </div>
     </div>
