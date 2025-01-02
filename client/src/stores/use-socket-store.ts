@@ -16,7 +16,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   isConnected: false,
 
   initSocket: () => {
-    if (get().socket) return; // Avoid reinitializing if socket already exists
+    if (get().socket) return; 
 
     const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, {
       withCredentials: true,
@@ -27,7 +27,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
     socket.on("connect", () => {
       set({ isConnected: true });
-      get().emitNewUser(); // Emit new user event on connect
+      get().emitNewUser();
     });
 
     socket.on("disconnect", () => set({ isConnected: false }));

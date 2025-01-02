@@ -32,7 +32,7 @@ const port = process.env.PORT || 8000;
 
 const io = new Server(server, {
   cors: {
-    origin: [process.env.CLIENT_URL!, "http://localhost:3001"],
+    origin: process.env.CLIENT_URL!,
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -49,7 +49,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL!, "http://localhost:3001"],
+    origin: process.env.CLIENT_URL!,
     credentials: true
   })
 );
