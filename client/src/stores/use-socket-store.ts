@@ -7,7 +7,8 @@ interface SocketState {
   socket: Socket | null;
   isConnected: boolean;
   initSocket: () => void;
-  connectSocket: () => void;
+  disconnectSocket: () => void;
+  emitNewUser: () => void;
 }
 
 export const useSocketStore = create<SocketState>((set, get) => ({
@@ -15,6 +16,8 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   isConnected: false,
 
   initSocket: () => {
+    if (get().socket) return; // Avoid reinitializing if socket already exists
+
     const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, {
       withCredentials: true,
       reconnection: true,
@@ -22,17 +25,29 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       reconnectionDelay: 1000
     });
 
-    socket.on("connect", () => set({ isConnected: true }));
+    socket.on("connect", () => {
+      set({ isConnected: true });
+      get().emitNewUser(); // Emit new user event on connect
+    });
+
     socket.on("disconnect", () => set({ isConnected: false }));
 
     set({ socket });
   },
 
-  connectSocket: () => {
+  disconnectSocket: () => {
+    const { socket } = get();
+    if (socket) {
+      socket.disconnect();
+      set({ socket: null, isConnected: false });
+    }
+  },
+
+  emitNewUser: () => {
     const { socket } = get();
     const user = useAuthStore.getState().user;
 
-    if (user && socket) {
+    if (socket && user) {
       socket.emit("newUser", user.id);
     }
   }

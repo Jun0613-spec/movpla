@@ -79,27 +79,14 @@ export const createChat = async (req: Request, res: Response): Promise<any> => {
     return res.status(400).json({ message: "Invalid participant" });
 
   try {
-    const existingChat = await prisma.chat.findFirst({
-      where: {
-        participants: {
-          some: {
-            id: { in: [userId, participantId] }
-          }
-        }
-      }
-    });
-
-    if (existingChat) {
-      return res
-        .status(400)
-        .json({ message: "Chat with this participant already exists" });
-    }
-
     const newChat = await prisma.chat.create({
       data: {
         participants: {
           connect: [{ id: userId }, { id: participantId }]
         }
+      },
+      include: {
+        participants: true
       }
     });
 

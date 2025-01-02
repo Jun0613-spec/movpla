@@ -81,27 +81,6 @@ export const initializeSocket = (io: Server): void => {
       }
     );
 
-    socket.on(
-      "markAsSeen",
-      async ({ chatId, userId }: { chatId: string; userId: string }) => {
-        try {
-          const messages = await prisma.message.findMany({ where: { chatId } });
-          const messageUpdates = messages.map((message) =>
-            prisma.message.update({
-              where: { id: message.id },
-              data: {
-                seenBy: { push: userId }
-              }
-            })
-          );
-          await Promise.all(messageUpdates);
-          console.log("Messages marked as seen by user:", userId);
-        } catch (error) {
-          console.error("Error marking chat as seen:", error);
-        }
-      }
-    );
-
     socket.on("disconnect", () => {
       console.log("A user disconnected", socket.id);
       removeUser(socket.id);

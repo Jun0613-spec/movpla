@@ -26,7 +26,8 @@ const ChatBox = () => {
   const [newMessage, setNewMessage] = useState<string>("");
   const [typing, setTyping] = useState<boolean>(false);
 
-  const { socket, initSocket, connectSocket } = useSocketStore();
+  const { socket, initSocket, disconnectSocket, emitNewUser } =
+    useSocketStore();
   const { user } = useAuthStore();
 
   const { data: chats, isLoading: chatsLoading } = useGetChats();
@@ -40,34 +41,29 @@ const ChatBox = () => {
   const { mutate: deleteChat } = useDeleteChat();
 
   useEffect(() => {
-    if (!socket) {
-      initSocket();
-    }
-
-    connectSocket();
+    initSocket();
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-      }
+      disconnectSocket();
     };
-  }, [socket, connectSocket, initSocket]);
+  }, [initSocket, disconnectSocket]);
 
   useEffect(() => {
     if (socket) {
-      socket.on("message", (message) => {
+      socket.on("message", (message: Message) => {
         if (message.chatId === activeChatId) {
           refetchMessages();
         }
       });
 
-      socket.on("typing", (userId) => {
+      socket.on("typing", (userId: string) => {
         if (userId !== user?.id && activeChatId) {
           setTyping(true);
-        } else {
-          setTyping(false);
+          setTimeout(() => setTyping(false), 3000);
         }
       });
+
+      emitNewUser();
     }
 
     return () => {
@@ -76,7 +72,7 @@ const ChatBox = () => {
         socket.off("typing");
       }
     };
-  }, [socket, activeChatId, refetchMessages, user?.id]);
+  }, [socket, activeChatId, refetchMessages, user?.id, emitNewUser]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === "" || !activeChatId) return;

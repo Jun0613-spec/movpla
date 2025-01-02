@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const auth_controller_1 = require("../controllers/auth.controller");
+const verify_token_1 = require("../middleware/verify-token");
+const validator_1 = require("../utils/validator");
+const oauth_controller_1 = require("../controllers/oauth.controller");
+const passport_1 = __importDefault(require("passport"));
+const router = express_1.default.Router();
+router.post("/register", validator_1.registerValidator, auth_controller_1.register);
+router.post("/login", validator_1.loginValidator, auth_controller_1.login);
+router.post("/refresh-token", auth_controller_1.refreshToken);
+router.post("/logout", auth_controller_1.logout);
+router.get("/current-user", verify_token_1.verifyToken, auth_controller_1.currentUser);
+router.get("/google", oauth_controller_1.googleLogin);
+router.get("/callback/google", passport_1.default.authenticate("google", { session: false }), oauth_controller_1.googleCallback);
+exports.default = router;
