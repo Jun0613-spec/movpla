@@ -62,13 +62,13 @@ const Slider = ({ images }: SliderProps) => {
         </div>
       )}
 
-      <div className="flex items-center justify-center w-full mb-6">
+      <div className="flex items-center justify-center mb-6 ">
         <Image
           src={images[0] || "/images/no-image.png"}
           alt="bigger-image"
-          width={500}
-          height={400}
-          className="rounded-lg object-cover cursor-pointer "
+          width={300}
+          height={200}
+          className="rounded-lg object-cover cursor-pointer"
           onClick={() => setImageIndex(0)}
         />
       </div>
@@ -76,13 +76,13 @@ const Slider = ({ images }: SliderProps) => {
       {/* Small Images */}
       <div className="flex items-center justify-start gap-2 mt-4 flex-wrap">
         {images.slice(1).map((image, index) => (
-          <div key={index} className="w-24 h-24 ">
+          <div key={index}>
             <Image
               src={image || "/images/no-image.png"}
               alt={`small image ${index + 1}`}
               width={100}
               height={100}
-              className="object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300"
+              className="object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform duration-300 w-24 h-24"
               onClick={() => setImageIndex(index + 1)}
             />
           </div>

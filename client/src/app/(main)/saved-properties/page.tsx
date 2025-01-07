@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Spinner from "@/components/spinner";
 import Pagination from "@/components/pagination";
@@ -45,30 +45,29 @@ const SavedPropertiesPage = () => {
         <h2 className="text-2xl font-semibold text-neutral-800 dark:text-neutral-50">
           Saved Property List
         </h2>
-        <Suspense fallback={<Spinner />}>
-          <div className="p-8 bg-white dark:bg-neutral-800 rounded-xl shadow-lg ">
-            {currentSavedProperties && currentSavedProperties.length > 0 ? (
-              <>
-                <PropertyList properties={currentSavedProperties} />
-                {totalPages > 1 && (
-                  <div className="mt-6">
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="flex justify-center items-center py-12">
-                <p className="text-lg text-neutral-500 dark:text-neutral-400">
-                  No saved properties yet.
-                </p>
-              </div>
-            )}
-          </div>
-        </Suspense>
+
+        <div className="p-8 bg-white dark:bg-neutral-800 rounded-xl shadow-lg ">
+          {currentSavedProperties && currentSavedProperties.length > 0 ? (
+            <>
+              <PropertyList properties={currentSavedProperties} />
+              {totalPages > 1 && (
+                <div className="mt-6">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex justify-center items-center py-12">
+              <p className="text-lg text-neutral-500 dark:text-neutral-400">
+                No saved properties yet.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

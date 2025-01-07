@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -89,28 +89,27 @@ const PropfilePage = () => {
             <Button>Create New Property</Button>
           </Link>
         </div>
-        <Suspense fallback={<Spinner />}>
-          <div className="p-8 bg-white dark:bg-neutral-800 rounded-xl shadow-lg">
-            {isLoading ? (
-              <Spinner />
-            ) : currentUserProperties && currentUserProperties.length > 0 ? (
-              <>
-                <PropertyList properties={currentUserProperties} />
-                {totalPages > 1 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                )}
-              </>
-            ) : (
-              <p className="text-neutral-500 dark:text-neutral-400">
-                No properties listed yet.
-              </p>
-            )}
-          </div>
-        </Suspense>
+
+        <div className="p-8 bg-white dark:bg-neutral-800 rounded-xl shadow-lg">
+          {isLoading ? (
+            <Spinner />
+          ) : currentUserProperties && currentUserProperties.length > 0 ? (
+            <>
+              <PropertyList properties={currentUserProperties} />
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
+          ) : (
+            <p className="text-neutral-500 dark:text-neutral-400">
+              No properties listed yet.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

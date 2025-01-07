@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React from "react";
 
 import Spinner from "@/components/spinner";
 
@@ -28,23 +28,20 @@ const ListPage = () => {
     <div className="flex h-screen">
       <div className="flex-[3] h-full p-4 overflow-y-auto no-scrollbar space-y-4">
         <Filter />
-        <Suspense fallback={<Spinner />}>
-          <div className="flex flex-col gap-6">
-            {properties && properties.length > 0 ? (
-              properties.map((property: Property) => (
-                <PropertyCard property={property} key={property.id} />
-              ))
-            ) : (
-              <p>No properties yet</p>
-            )}
-          </div>
-        </Suspense>
+
+        <div className="flex flex-col gap-6">
+          {properties && properties.length > 0 ? (
+            properties.map((property: Property) => (
+              <PropertyCard property={property} key={property.id} />
+            ))
+          ) : (
+            <p>No properties yet</p>
+          )}
+        </div>
       </div>
 
       <div className="hidden md:flex flex-[2] h-full ">
-        <Suspense fallback={<Spinner />}>
-          <Map properties={properties} />
-        </Suspense>
+        <Map properties={properties} />
       </div>
     </div>
   );
