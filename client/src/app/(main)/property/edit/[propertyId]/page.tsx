@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,14 +51,55 @@ const PropertyEditPage = () => {
     resolver: zodResolver(editPropertySchema),
 
     defaultValues: {
-      ...property,
-      bedroom: property.bedroom.toString(),
-      bathroom: property.bathroom.toString(),
-      price: property.price.toString(),
-      size: property.size.toString(),
+      title: property?.title || "",
+      desc: property?.desc || "",
+      address: property?.address || "",
+      postcode: property?.postcode || "",
+      city: property?.city || "",
+      price: property?.price?.toString() || "",
+      bedroom: property?.bedroom?.toString() || "",
+      bathroom: property?.bathroom?.toString() || "",
+      latitude: property?.latitude?.toString() || "",
+      longitude: property?.longitude?.toString() || "",
+      listingType: property?.listingType || "",
+      propertyType: property?.propertyType || "",
+      furnishedType: property?.furnishedType || "",
+      pet: property?.pet || false,
+      garden: property?.garden || false,
+      balcony: property?.balcony || false,
+      parking: property?.parking || false,
+      size: property?.size?.toString() || "",
       images: property?.images || []
     }
   });
+
+  useEffect(() => {
+    if (property) {
+      form.reset({
+        title: property?.title || "",
+        desc: property?.desc || "",
+        address: property?.address || "",
+        postcode: property?.postcode || "",
+        city: property?.city || "",
+        price: property?.price?.toString() || "",
+        bedroom: property?.bedroom?.toString() || "",
+        bathroom: property?.bathroom?.toString() || "",
+        latitude: property?.latitude?.toString() || "",
+        longitude: property?.longitude?.toString() || "",
+        listingType: property?.listingType || "",
+        propertyType: property?.propertyType || "",
+        furnishedType: property?.furnishedType || "",
+        pet: property?.pet || false,
+        garden: property?.garden || false,
+        balcony: property?.balcony || false,
+        parking: property?.parking || false,
+        size: property?.size?.toString() || "",
+        images: property?.images || []
+      });
+
+      setImagePreviews(property?.images || []);
+    }
+  }, [property, form]);
 
   const onSubmit = (values: z.infer<typeof editPropertySchema>) => {
     const formData = new FormData();
@@ -530,7 +571,7 @@ const PropertyEditPage = () => {
             </div>
 
             <div className="w-full bg-neutral-100 dark:bg-neutral-800 p-6 rounded-md shadow-sm border border-neutral-300 dark:border-neutral-600">
-              <h2 className="text-lg font-semibold text-neutral-700 mb-4">
+              <h2 className="text-lg font-semibold text-neutral-700 dark:text-neutral-400 mb-4">
                 Property Images
               </h2>
               <div className="w-full flex flex-wrap gap-4 justify-start items-center">
