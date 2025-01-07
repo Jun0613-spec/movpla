@@ -35,6 +35,10 @@ const SavedPropertiesPage = () => {
     startIndex + propertiesPerPage
   );
 
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="flex-1 p-6 lg:py-12 lg:px-16 space-y-8">
       <div className="space-y-8">
@@ -43,9 +47,7 @@ const SavedPropertiesPage = () => {
         </h2>
         <Suspense fallback={<Spinner />}>
           <div className="p-8 bg-white dark:bg-neutral-800 rounded-xl shadow-lg ">
-            {isLoading ? (
-              <Spinner />
-            ) : currentSavedProperties && currentSavedProperties.length > 0 ? (
+            {currentSavedProperties && currentSavedProperties.length > 0 ? (
               <>
                 <PropertyList properties={currentSavedProperties} />
                 {totalPages > 1 && (
