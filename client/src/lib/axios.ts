@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { useRouter } from "next/navigation";
 
 import { useAuthStore } from "@/stores/use-auth-store";
 
@@ -58,6 +59,7 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config;
     const authStore = useAuthStore.getState();
+    const router = useRouter();
 
     if (error.response?.status === 401 && originalRequest) {
       if (isRefreshing) {
@@ -69,30 +71,23 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        console.log("Attempting to refresh the token...");
-
         const refreshResponse = await axiosInstance.post<{
           accessToken: string;
         }>("/api/auth/refresh-token");
         const { accessToken } = refreshResponse.data;
 
-        console.log("Received new access token:", accessToken);
-
         authStore.setAccessToken(accessToken);
-
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
         processQueue(null, accessToken, originalRequest);
 
         return axiosInstance(originalRequest);
       } catch (refreshError: unknown) {
-        console.error("Refresh token error:", refreshError);
-        const error = refreshError as AxiosError;
-
         authStore.logout();
-        window.location.href = "/login";
+        router.push("/login");
 
         processQueue(error, null, originalRequest);
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

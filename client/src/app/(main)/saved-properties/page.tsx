@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 
 import Spinner from "@/components/spinner";
 import Pagination from "@/components/pagination";
