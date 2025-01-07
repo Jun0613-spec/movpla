@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { axiosInstance } from "@/lib/axios";
 
 import { ErrorResponse, Message } from "@/types";
+import { useSocketStore } from "@/stores/use-socket-store";
 
 interface CreateMessageRequest {
   text: string;
@@ -18,6 +19,8 @@ interface CreateMessageResponse {
 
 export const useCreateMessage = () => {
   const queryClient = useQueryClient();
+
+  const { socket } = useSocketStore();
 
   const mutation = useMutation<
     CreateMessageResponse,
@@ -53,6 +56,14 @@ export const useCreateMessage = () => {
         queryKey: ["message", data.newMessage.id]
       });
       queryClient.invalidateQueries({ queryKey: ["chats"] });
+
+      if (socket) {
+        socket.emit("sendMessage", {
+          chatId: data.newMessage.chatId,
+          senderId: data.newMessage.senderId,
+          text: data.newMessage.text
+        });
+      }
     },
     onSettled: (data) => {
       queryClient.refetchQueries({ queryKey: ["chats"] });

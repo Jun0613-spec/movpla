@@ -51,13 +51,11 @@ const ChatBox = () => {
   useEffect(() => {
     if (socket) {
       socket.on("message", (message: Message) => {
-        if (message.chatId === activeChatId) {
-          refetchMessages();
-        }
+        if (message.chatId === activeChatId) refetchMessages();
       });
 
       socket.on("typing", (userId: string) => {
-        if (userId !== user?.id && activeChatId) {
+        if (userId !== user?.id) {
           setTyping(true);
           setTimeout(() => setTyping(false), 3000);
         }
@@ -74,17 +72,13 @@ const ChatBox = () => {
     };
   }, [socket, activeChatId, refetchMessages, user?.id, emitNewUser]);
 
-  const handleSendMessage = async () => {
-    if (newMessage.trim() === "" || !activeChatId) return;
-
-    createMessage(
-      { chatId: activeChatId, text: newMessage },
-      {
-        onSuccess: () => {
-          setNewMessage("");
-        }
-      }
-    );
+  const handleSendMessage = () => {
+    if (newMessage.trim() && activeChatId) {
+      createMessage(
+        { chatId: activeChatId, text: newMessage },
+        { onSuccess: () => setNewMessage("") }
+      );
+    }
   };
 
   const handleDeleteChat = (chatId: string) => {

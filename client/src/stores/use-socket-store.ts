@@ -16,7 +16,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
   isConnected: false,
 
   initSocket: () => {
-    if (get().socket) return; 
+    if (get().socket) return;
 
     const socket = io(process.env.NEXT_PUBLIC_SERVER_URL!, {
       withCredentials: true,
