@@ -149,12 +149,12 @@ const PropertyIdPage = () => {
               ) : (
                 <>
                   <Button
-                    variant="outline"
+                    variant="muted"
                     onClick={() => {
                       if (!isAuthenticated) {
                         router.push("/login");
                       } else {
-                        console.log("Send a message to the user");
+                        window.location.href = `mailto:${property.user?.email}?subject=Interested in ${property.title}&body=Hello, I am interested in your property at ${property.address}, ${property.postcode}.`;
                       }
                     }}
                     className="w-full hover:opacity-80"
@@ -162,7 +162,7 @@ const PropertyIdPage = () => {
                     <MailIcon className="!size-5" />
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="muted"
                     onClick={() => {
                       if (!isAuthenticated) {
                         router.push("/login");

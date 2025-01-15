@@ -8,7 +8,7 @@ React, Next.js, TypeScript, TailwindCSS, Shadcn UI, React Query, Axios, React-Le
 
 # Backend Tech
 
-Express, TypeScript, PostgreSQL, Prisma, Cloudinary, Passport.js, Socket.io, JSON Web Tokens (JWT)
+Express, TypeScript, PostgreSQL, Prisma, Cloudinary, Passport.js, JSON Web Tokens (JWT)
 
 ### Database ORM
 
@@ -27,6 +27,8 @@ Frontend setup
 
 NEXT_PUBLIC_APP_URL=
 NEXT_PUBLIC_SERVER_URL=
+
+----------------------
 
 Backend setup
 

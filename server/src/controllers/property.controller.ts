@@ -51,12 +51,7 @@ export const getPropertyById = async (
     const existProperty = await prisma.property.findUnique({
       where: { id: propertyId },
       include: {
-        user: {
-          select: {
-            username: true,
-            avatarImage: true
-          }
-        }
+        user: true
       }
     });
 

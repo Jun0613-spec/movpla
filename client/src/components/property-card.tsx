@@ -5,7 +5,6 @@ import {
   BedIcon,
   BookmarkIcon,
   EditIcon,
-  MailIcon,
   MapPinHouseIcon,
   TrashIcon
 } from "lucide-react";
@@ -24,7 +23,6 @@ import { useConfirm } from "@/hooks/use-confirm";
 
 import { useAuthStore } from "@/stores/use-auth-store";
 import { useSavePropertyStore } from "@/stores/use-save-property-store";
-import { useCreateChat } from "@/hooks/chats/use-create-chat";
 
 interface PropertyCardProps {
   property: Property;
@@ -38,7 +36,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
   const { mutate: saveProperty } = useSaveProperty();
   const { mutate: deleteProperty } = useDeleteProperty();
-  const { mutate: createChat } = useCreateChat();
 
   const [DeleteDialog, confirmDelete] = useConfirm(
     "Delete Property",
@@ -61,16 +58,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     if (!ok) return;
 
     deleteProperty({ propertyId: property.id });
-  };
-
-  const handleMessage = () => {
-    if (!user?.id || !property.userId) {
-      return;
-    }
-
-    const participantId = property.userId;
-
-    createChat({ participantId });
   };
 
   const isOwner = user && user.id === property.userId;
@@ -139,9 +126,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                     ) : (
                       <BookmarkIcon className="!size-4 text-neutral-800 dark:text-neutral-200" />
                     )}
-                  </Button>
-                  <Button onClick={handleMessage} variant="muted" size="icon">
-                    <MailIcon className="!size-4 text-neutral-800 dark:text-neutral-200" />
                   </Button>
                 </div>
               )}

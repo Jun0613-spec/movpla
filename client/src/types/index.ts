@@ -11,7 +11,6 @@ export interface User {
   updatedAt: string;
   properties: Property[];
   savedProperties: SavedProperty[];
-  chats: Chat[];
   refreshTokens: RefreshToken[];
 }
 
@@ -96,27 +95,6 @@ export interface SavedProperty {
   property?: Property;
   propertyId?: string;
   isSaved: boolean;
-}
-
-export interface Chat {
-  id: string;
-  lastMessage?: string;
-  createdAt: string;
-  updatedAt: string;
-  participants: User[];
-  messages: Message[];
-}
-
-export interface Message {
-  id: string;
-  text: string;
-  seenBy: string[];
-  createdAt: string;
-  updatedAt: string;
-  chat: Chat;
-  chatId: string;
-  sender: User;
-  senderId: string;
 }
 
 export interface ErrorResponse {

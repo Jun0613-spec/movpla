@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import MobileNav from "./mobile-nav";
 import NavItem from "./nav-item";
 import UserButton from "./user-button";
-import MessageButton from "./messages-button";
 
 import { useAuthStore } from "@/stores/use-auth-store";
 
@@ -60,7 +59,6 @@ const Navbar = () => {
         <ModeToggle />
         {isAuthenticated ? (
           <div className="flex items-center gap-4">
-            <MessageButton />
             <UserButton />
           </div>
         ) : (

@@ -26,10 +26,7 @@ model User {
   updatedAt              DateTime        @updatedAt
   
   properties             Property[]      
-  savedProperties        SavedProperty[] 
- 
-  chats                  Chat[]          
-  messages               Message[]      
+  savedProperties        SavedProperty[]    
 
   refreshTokens          RefreshToken[]  @relation("refresh_token")
 
@@ -124,34 +121,3 @@ model SavedProperty {
   @@index([userId, propertyId])
   @@map("saved_property")
 }
-
-model Chat {
-  id                     String      @id @default(cuid())
-  lastMessage            String?
-  createdAt              DateTime    @default(now())
-  updatedAt              DateTime    @updatedAt
-  
-  participants           User[]
-  messages               Message[]
-
-  @@index([updatedAt])
-  @@map("chat")
-}
-
-model Message {
-  id                     String      @id @default(cuid())
-  text                   String
-  createdAt              DateTime    @default(now())
-  updatedAt              DateTime    @updatedAt
-
-  chat                   Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId                 String
-
-  sender                 User        @relation(fields: [senderId], references: [id],  onDelete: Cascade)
-  senderId               String
-  
-  @@index([createdAt])
-  @@index([senderId])
-  @@map("messages")
-}
-
