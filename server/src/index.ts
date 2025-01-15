@@ -40,7 +40,11 @@ app.use(
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello world");
+  res.send("Movpla server is working");
+});
+
+app.get("/health", async (req: Request, res: Response) => {
+  res.send({ message: "ok" });
 });
 
 app
