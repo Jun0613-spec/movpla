@@ -1,5 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { useRouter } from "next/navigation";
+import axios from "axios";
 
 import { useAuthStore } from "@/stores/use-auth-store";
 
@@ -28,69 +27,28 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-let isRefreshing = false;
-let failedQueue: {
-  resolve: (value: AxiosResponse) => void;
-  reject: (reason: AxiosError) => void;
-}[] = [];
-
-const processQueue = async (
-  error: AxiosError | null,
-  accessToken: string | null,
-  originalRequest: AxiosRequestConfig
-) => {
-  for (const prom of failedQueue) {
-    if (accessToken) {
-      try {
-        const response = await axiosInstance(originalRequest);
-        prom.resolve(response);
-      } catch (err) {
-        prom.reject(err as AxiosError);
-      }
-    } else {
-      prom.reject(error ?? new AxiosError("Unknown error occurred"));
-    }
-  }
-  failedQueue = [];
-};
-
 axiosInstance.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
+  async (error) => {
     const originalRequest = error.config;
-    const authStore = useAuthStore.getState();
-    const router = useRouter();
 
-    if (error.response?.status === 401 && originalRequest) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        });
-      }
-
-      isRefreshing = true;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
 
       try {
         const refreshResponse = await axiosInstance.post<{
           accessToken: string;
         }>("/api/auth/refresh-token");
+
         const { accessToken } = refreshResponse.data;
 
+        const authStore = useAuthStore.getState();
         authStore.setAccessToken(accessToken);
+
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-
-        processQueue(null, accessToken, originalRequest);
-
         return axiosInstance(originalRequest);
-      } catch (refreshError: unknown) {
-        authStore.logout();
-        router.push("/login");
-
-        processQueue(error, null, originalRequest);
-
+      } catch (refreshError) {
         return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
       }
     }
 
